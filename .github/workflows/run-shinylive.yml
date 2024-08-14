@@ -1,27 +1,41 @@
-name: Run Shinylive Export
+name: Build and Export Shiny App
 
 on:
   push:
     branches:
-      - main  # This specifies that the workflow will run on pushes to the main branch
+      - main
 
 jobs:
-  export:
-    runs-on: ubuntu-latest  # You can choose different runners like ubuntu-latest, windows-latest, or macos-latest
+  build:
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3  # This action checks out your repository code
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
     - name: Set up R
       uses: r-lib/actions/setup-r@v2
-      with:
-        r-version: '4.3'  # Specify the R version required for your app
 
-    - name: Install R packages
+    - name: Install System Dependencies
       run: |
-        R -e "install.packages('shinylive')"
+        sudo apt-get update
+        sudo apt-get install -y libcurl4-openssl-dev libxml2-dev libssl-dev
 
-    - name: Run shinylive::export
+    - name: Install Required R Packages
       run: |
-        R -e "shinylive::export(appdir = 'myapp', destdir = 'docs')"
+        Rscript -e 'install.packages(c("remotes", "curl", "httr2", "pkgdepends", "gh", "archive"))'
+        Rscript -e 'remotes::install_github("rstudio/shinylive")'
+
+    - name: Export Shiny app
+      run: |
+        Rscript -e 'shinylive::export(appdir = "myapp", destdir = "docs")'
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add docs/
+        git commit -m "Update Shiny app"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
