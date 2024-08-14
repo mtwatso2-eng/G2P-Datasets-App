@@ -20,7 +20,7 @@ jobs:
 
     - name: Install R packages
       run: |
-        R -e "install.packages(c('shinylive', 'shiny', 'other-required-packages'))"
+        R -e "install.packages('shinylive')"
 
     - name: Run shinylive::export
       run: |
