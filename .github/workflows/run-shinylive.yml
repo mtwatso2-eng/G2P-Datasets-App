@@ -40,4 +40,4 @@ jobs:
         git commit -m "Update Shiny app"
         git push
       env:
-        GITHUB_TOKEN: ${{ secrets.MY_PAT }}
+        MY_PAT: ${{ secrets.MY_PAT }}
