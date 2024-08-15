@@ -1,4 +1,4 @@
 # Shiny App
 
 This is an R Shiny app
-https://harishneelam.github.io/G2P-Datasets-App/
+https://harish-neelam.shinyapps.io/g2p-datasets-app/
