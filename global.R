@@ -7,6 +7,9 @@ require(data.table)
 require(DT)
 require(rclipboard)
 require(tidyverse); require(magrittr)
+library(stringr) 
+library(shinyjs)
+library(gert)
 source("utils.R")
 
 # repoDir <- "https://github.com/mtwatso2-eng/testing/archive/refs/heads/main.zip"

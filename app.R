@@ -1,4 +1,5 @@
 source("global.R")
+source("RSFunctions.R")
 
 ui <- navbarPage(id = "tabs", collapsible = TRUE, title = "Genome-to-Phenome Datasets App",
   modulePanel("Datasets", value = "datasets"),
