@@ -127,7 +127,7 @@ geno <- ''"),
   
   "server" = function(input, output, session){
     ## Get the metadata from GitHub repo
-    Meta_Data <- metadata
+    Meta_Data <- read.csv('testing-main/Meta_Data_Tags.csv')
     # Meta_Data <- GET_meta_data() # update final repo details in RSFunction
     # Meta_Data <- readxl::read_xlsx('/Users/harishneelam/Desktop/Quantgen/GPDatasets/Meta_data.xlsx')
     
