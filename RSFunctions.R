@@ -173,34 +173,34 @@ generate_folder_name <- function(Title,Species_Common_Name,Meta_Data){
   return(Folder_name)
 }
 
-# Get Meta data from Github
-# Update accordingly
-repo_owner <- 'Harishneelam'
-repo_name <- 'G2P-Datasets-App'
-branch_name <- 'main' 
-commit_message <- 'Updated Meta data via app'
-access_token <- "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"
-
-GET_meta_data <- function(){
-  file_path <- 'testing-main/Meta_data_Tags.csv'
-  csv_content <- get_file_from_github(repo_owner, repo_name, file_path, branch_name, access_token)
-  df <- read_csv(csv_content)
-  return(df)
-}
-
-get_file_from_github <- function(repo_owner, repo_name, file_path, branch_name, access_token) {
-  url <- paste0('https://api.github.com/repos/', repo_owner, '/', repo_name, '/contents/', file_path, '?ref=', branch_name)
-  headers <- add_headers(
-    Authorization = paste('token', access_token),
-    `Accept` = 'application/vnd.github.v3.raw'
-  )
-  response <- GET(url, headers)
-  if (status_code(response) == 200) {
-    return(content(response, "text"))
-  } else {
-    stop(paste('Error fetching file:', content(response, "text")))
-  }
-}
+# # Get Meta data from Github
+# # Update accordingly
+# repo_owner <- 'Harishneelam'
+# repo_name <- 'G2P-Datasets-App'
+# branch_name <- 'main' 
+# commit_message <- 'Updated Meta data via app'
+# access_token <- "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"
+# 
+# GET_meta_data <- function(){
+#   file_path <- 'testing-main/Meta_data_Tags.csv'
+#   csv_content <- get_file_from_github(repo_owner, repo_name, file_path, branch_name, access_token)
+#   df <- read_csv(csv_content)
+#   return(df)
+# }
+# 
+# get_file_from_github <- function(repo_owner, repo_name, file_path, branch_name, access_token) {
+#   url <- paste0('https://api.github.com/repos/', repo_owner, '/', repo_name, '/contents/', file_path, '?ref=', branch_name)
+#   headers <- add_headers(
+#     Authorization = paste('token', access_token),
+#     `Accept` = 'application/vnd.github.v3.raw'
+#   )
+#   response <- GET(url, headers)
+#   if (status_code(response) == 200) {
+#     return(content(response, "text"))
+#   } else {
+#     stop(paste('Error fetching file:', content(response, "text")))
+#   }
+# }
 
 # Update Meta data in Github
 update_meta_data <- function(new_data,Meta_Data){
@@ -243,22 +243,8 @@ update_file_on_github <- function(repo_owner, repo_name, file_path, content, bra
 
 verify_folder <- function(folder){
   file_path <- paste0('testing-main/Datasets/',folder)
-  verify_data_in_github(repo_owner, repo_name, file_path, branch_name, access_token)
+  return(file.exists(file_path))
 }
 
-verify_data_in_github <- function(repo_owner, repo_name, file_path, branch_name, access_token){
-  url <- paste0('https://api.github.com/repos/', repo_owner, '/', repo_name, '/contents/', file_path, '?ref=', branch_name)
-  headers <- add_headers(
-    Authorization = paste('token', access_token),
-    `Accept` = 'application/vnd.github.v3.raw'
-  )
-  response <- GET(url, headers)
-  if (status_code(response) == 200) {
-    return(TRUE)
-  } else if (status_code(response) == 404) {
-    return(FALSE)
-  } else {
-    return(FALSE)
-  }
-}
+
 
