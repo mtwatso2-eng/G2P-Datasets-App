@@ -332,8 +332,8 @@ geno <- ''"),
       output$result7 <- renderUI({
         tagList(
           tags$ul(
-            tags$li("Unzip the content."),
-            tags$li("Navigate to the ",tags$a(href = "https://github.dev/mtwatso2-eng/G2P-Datasets-App"  , target = "_blank", "GPDatasets GitHub Repository")),
+            tags$li("Unzip the content and verify."),
+            tags$li("Navigate to the ",tags$a(href = "https://github.dev/Harishneelam/G2P-Datasets-App"  , target = "_blank", "GPDatasets GitHub Repository")),
             tags$li("Drag the downloaded dataset folder onto the DATASETS folder on the web."),
             tags$li("Go to source control located on the left panel by simply pressing CTRL+SHIFT+G."),
             tags$li("Paste the following in the message box and press CMD+ENTER to continue.")
@@ -361,7 +361,7 @@ geno <- ''"),
       # Checks the Pull requests and verifies if the data submitted successfully.
       ###### Change the repo later
       observeEvent(input$verifyData, {
-        response = GET("https://api.github.com/repos/mtwatso2-eng/G2P-Datasets-App/pulls")
+        response = GET("https://api.github.com/repos/Harishneelam/G2P-Datasets-App/pulls")
         pulls <- httr::content(response, "parsed")
         if(length(pulls) > 0) {
           This_pull <- pulls[[1]]
