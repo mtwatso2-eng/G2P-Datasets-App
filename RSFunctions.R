@@ -100,7 +100,7 @@ find_Article <- function(Title, SearchTerm){
         pub_link <- GET(doi_url)$url
       }
       # Get the Abstract
-      abstract <- ifelse(is.null(result$abstract[1]),'NA',sub("^[\\s:~*]+", "", result$abstract[1]))
+      abstract <- ifelse(is.null(result$abstract[1]),'',sub("^[\\s:~*]+", "", result$abstract[1]))
       message0 <- paste("<span style='color: black;'>Article found at </span><a href='", pub_link, "' target='_blank'>", pub_link, "</a>", sep = "")
       message1 <- "<span style='color: grey; font-size:12px;'>If this is not the desired article, please modify it after previewing the data.</span>"
       return(list(paste(message0,"<br>",message1),TRUE,pub_link,abstract))
