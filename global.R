@@ -12,11 +12,10 @@ library(shinyjs)
 library(gert)
 source("utils.R")
 
-repoDir <- "https://github.com/mtwatso2-eng/testing/archive/refs/heads/main.zip"
+repoDir <- "https://github.com/Harishneelam/G2P-Datasets-App/archive/refs/heads/main.zip"
 download.file(url = repoDir, destfile = "repo.zip")
 unzip(zipfile = "repo.zip")
-
-datasetDir <- "testing-main"
+datasetDir <- "G2P-Datasets-App-main/testing-main/Datasets"
 
 metadata <<- datasetDir %>%
   list.files(full.names = TRUE, recursive = TRUE) %>%

@@ -4,7 +4,7 @@ addDataset <- list(
     useShinyjs(),
     h1("Add dataset"),
     p("The GPDatasets repository is designed so that users can add their own public datasets. To add a dataset/database, first fill in the fields below, download the generated dataset folder, then push the dataset folder to", a("GPDatasets GitHub", href = "https://github.com/QuantGen/GPDatasets")),
-    HTML("<strong>Important note</strong><span style='color:red;'>*</span>: The data should atleast contain genotypic data(SNPs) for a species."),
+    HTML("<strong>Important note</strong>: The data should atleast contain genotypic data(SNPs) for a species. Please fill in all the required fields(<span style='color:red;'>*</span>) and complete the additional fields to make the dataset more comprehensive."),
     tags$head(
       tags$style(HTML("
     .input-group {
@@ -106,30 +106,15 @@ geno <- ''"),
     fluidRow(column(6, downloadButton("downloadDataset", "Download dataset folder",style = "margin-left: 22px;"))),
     fluidRow(column(8, uiOutput("result7"))),
     rclipboardSetup(),
-    fluidRow(column(5,uiOutput("Code1"),style = "padding: 0; margin-left: 22px;"),
-             column(1,uiOutput("copyButton1"),style = "padding: 0;margin-left: 0;")),
-    fluidRow(column(5,uiOutput("Code2"),style = "padding: 0; margin-left: 22px;"),
-             column(1,uiOutput("copyButton2"),style = "padding: 0;margin-left: 0;")),
-    fluidRow(column(5,uiOutput("Code3"),style = "padding: 0; margin-left: 22px;"),
-             column(1,uiOutput("copyButton3"),style = "padding: 0;margin-left: 0;")),
-    fluidRow(column(5,uiOutput("Code4"),style = "padding: 0; margin-left: 22px;"),
-             column(1,uiOutput("copyButton4"),style = "padding: 0;margin-left: 0;")),
-    fluidRow(column(5,uiOutput("Code5"),style = "padding: 0; margin-left: 22px;"),
-             column(1,uiOutput("copyButton5"),style = "padding: 0;margin-left: 0;")),
-    fluidRow(column(5,uiOutput("Code6"),style = "padding: 0; margin-left: 22px;"),
-             column(1,uiOutput("copyButton6"),style = "padding: 0;margin-left: 0;")),
-    fluidRow(column(5,uiOutput("Code7"),style = "padding: 0; margin-left: 22px;"),
-             column(1,uiOutput("copyButton7"),style = "padding: 0;margin-left: 0;")),
+    fluidRow(column(5,uiOutput("Code0"),style = "margin-left: 22px;"),
+             column(1,uiOutput("copyButton0"),style = "padding: 0;margin-left: 0;")),
     fluidRow(column(8,uiOutput("result8"))),
     fluidRow(column(8,uiOutput("submitButton"))),
     br()
   ),
   
   "server" = function(input, output, session){
-    ## Get the metadata from GitHub repo
-    Meta_Data <- read.csv('testing-main/Meta_Data_Tags.csv')
-    # Meta_Data <- GET_meta_data() # update final repo details in RSFunction
-    # Meta_Data <- readxl::read_xlsx('/Users/harishneelam/Desktop/Quantgen/GPDatasets/Meta_data.xlsx')
+    Meta_Data <- metadata
     
     Bresult1 <- reactiveVal(NULL)
     observeEvent(input$validateDOI, {
@@ -158,7 +143,6 @@ geno <- ''"),
           })
         }
       } 
-      
     })
     
     
@@ -312,9 +296,6 @@ geno <- ''"),
       })
     })
     
-    
-    
-    
     dataSubmitted <- reactiveVal(FALSE)
     observeEvent(input$proceedData, {
       dataSubmitted(TRUE)
@@ -342,86 +323,80 @@ geno <- ''"),
         tagList(
           tags$div(style = "color: black; font-weight: bold;", "Instructions to add the dataset to the GitHub Repository:"),
           tags$ul(
-            tags$li("Click the following button to download the dataset folder."),
-            tags$li("Ensure the file is saved to your DOWNLOADS folder.")
+            tags$li("Click the following button to download the dataset folder.")
           )
         )
       })
+      
+      ######## Change the repo later
       output$result7 <- renderUI({
         tagList(
           tags$ul(
-            tags$li("Open your terminal and paste the following commands. Modify them as needed")
+            tags$li("Unzip the content."),
+            tags$li("Navigate to the ",tags$a(href = "https://github.dev/mtwatso2-eng/G2P-Datasets-App"  , target = "_blank", "GPDatasets GitHub Repository")),
+            tags$li("Drag the downloaded dataset folder onto the DATASETS folder on the web."),
+            tags$li("Go to source control located on the left panel by simply pressing CTRL+SHIFT+G."),
+            tags$li("Paste the following in the message box and press CMD+ENTER to continue.")
           )
         )
       })
-      code_text1 <- "cd"
-      output$Code1 <- renderUI({tags$pre(tags$code(code_text1))})
-      output$copyButton1 <- renderUI({rclipButton(inputId = "copy",label = "",clipText = code_text1,icon = icon("clipboard"))})
-      code_text2 <- "git clone git@github.com:QuantGen/GPDatasets.git "
-      output$Code2 <- renderUI({tags$pre(tags$code(code_text2))})
-      output$copyButton2 <- renderUI({rclipButton(inputId = "copy", label = "",clipText = code_text2,icon = icon("clipboard"))})
-      code_text3 <- "cd GPDatasets/Datasets"
-      output$Code3 <- renderUI({tags$pre(tags$code(code_text3))})
-      output$copyButton3 <- renderUI({rclipButton(inputId = "copy", label = "",clipText = code_text3,icon = icon("clipboard"))})
-      code_text4 <- paste0("mv ~/Downloads/",Bresult4()[[1]])
-      output$Code4 <- renderUI({tags$pre(tags$code(code_text4))})
-      output$copyButton4 <- renderUI({rclipButton(inputId = "copy", label = "",clipText = code_text4,icon = icon("clipboard"))})
-      code_text5 <- "git add ."
-      output$Code5 <- renderUI({tags$pre(tags$code(code_text5))})
-      output$copyButton5 <- renderUI({rclipButton(inputId = "copy", label = "",clipText = code_text5,icon = icon("clipboard"))})
-      code_text6 <- paste0("git commit -m 'Added ",Bresult4()[[1]], "'")
-      output$Code6 <- renderUI({tags$pre(tags$code(code_text6))})
-      output$copyButton6 <- renderUI({rclipButton(inputId = "copy", label = "",clipText = code_text6,icon = icon("clipboard"))})
-      code_text7 <- "git push git@github.com:QuantGen/GPDatasets.git"
-      output$Code7 <- renderUI({tags$pre(tags$code(code_text7))})
-      output$copyButton7 <- renderUI({rclipButton(inputId = "copy", label = "",clipText = code_text7,icon = icon("clipboard"))})
+      
+      code_text0 <- paste0("Added ",Bresult4()[[1]])
+      output$Code0 <- renderUI({tags$pre(tags$code(code_text0))})
+      output$copyButton0 <- renderUI({rclipButton(inputId = "copy", label = "",clipText = code_text0,icon = icon("clipboard"))})
       
       output$result8 <- renderUI({
-        url <- "https://github.com/QuantGen/GPDatasets"  
         tagList(
           tags$ul(
-            tags$li(
-              "Please verify if the Dataset is uploaded at ",
-              tags$a(href = url, target = "_blank", "GPDatasets GitHub")
-            )
+            tags$li("Press ENTER 3 times to succesfully create the pull request."),
+            tags$li("Press the following SUBMIT button to verify the data submission.")
           )
         )
       })
       
-      # Final submit button
       output$submitButton <- renderUI({
-        actionButton("submitData", "Submit")
+        actionButton("verifyData", "Submit")
       })
+      
+      # Checks the Pull requests and verifies if the data submitted successfully.
+      ###### Change the repo later
+      observeEvent(input$verifyData, {
+        response = GET("https://api.github.com/repos/mtwatso2-eng/G2P-Datasets-App/pulls")
+        pulls <- httr::content(response, "parsed")
+        if(length(pulls) > 0) {
+          This_pull <- pulls[[1]]
+          if(This_pull$title == paste0("Added ",Bresult4()[[1]])){
+            showModal(modalDialog(
+              title = "Thank you!",
+              "The data has been submitted.",
+              "One of our team members will validate the data and merge it with the Repository soon.",
+              "Please refresh the page to add another dataset.",
+              easyClose = TRUE,
+              footer = NULL
+            ))
+          } else {
+            showModal(modalDialog(
+              title = "Error!",
+              "The data has not been submitted.",
+              "Please follow the instructions carefully and verify if a pull request is created.",
+              easyClose = TRUE,
+              footer = NULL
+            ))
+          }
+        } else {
+          showModal(modalDialog(
+            title = "Error!",
+            "The data has not been submitted.",
+            "Please follow the instructions carefully and verify if a pull request is created.",
+            easyClose = TRUE,
+            footer = NULL
+          ))
+        }
+      })
+      
     })
     
     
-    
-    observeEvent(input$submitData, {
-      # Final submission
-      
-      # Verify if the data has been pushed and then update the meta data.
-      result_final <- verify_folder(Bresult4()[[1]])
-      if(result_final == TRUE){
-        ################### Update Meta data csv file in Github
-        # update_meta_data(Bresult4(),Meta_Data)
-        showModal(modalDialog(
-          title = "Thank you!",
-          "The data has been submitted.",
-          "Please refresh the page to add a new dataset.",
-          easyClose = TRUE,
-          footer = NULL
-        ))
-      } else{
-        showModal(modalDialog(
-          title = "Error!",
-          "The data has not been submitted.",
-          "Please follow the instructions carefully and verify if the data has been pushed.",
-          easyClose = TRUE,
-          footer = NULL
-        ))
-      }
-      
-    })
     
     # Generate Data Folder to download
     output$downloadDataset <- downloadHandler(
@@ -441,7 +416,11 @@ geno <- ''"),
         setwd(temp_folder_path)
         
         # read_data_code.R generator
-        writeLines(strsplit(input$addLoaderCode, "\n")[[1]][-1], "read_data_code.R")
+        lines <- strsplit(input$addLoaderCode, "\n")[[1]]
+        if (grepl("# Recommended", lines[1])) {
+          lines <- lines[-1]
+        }
+        writeLines(lines, "read_data_code.R")
         # create output folder
         output_folder <- "output"
         if (!dir.exists(output_folder)){
@@ -478,10 +457,6 @@ geno <- ''"),
       },
       contentType = "application/zip"
     )
-    
-    
-    
   }
-  
   
 )
