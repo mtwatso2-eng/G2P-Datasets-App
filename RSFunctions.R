@@ -15,7 +15,6 @@ library(stringdist)
 library(base64enc)
 library(tm)
 
-
 # Check if the URL is valid
 check_url <- function(url,Meta_Data) {
   response <- tryCatch({GET(url)}, error = function(e) {NULL})
@@ -94,11 +93,14 @@ find_Article <- function(Title, SearchTerm){
     similarity <- 1 - stringdist(Title, result$title[1], method = "jw")
     if(similarity > 0.8){
       # Get the publication link
-      doi_url <- paste0("https://doi.org/",result$externalIds$DOI[1])
-      pub_link <- GET(doi_url)$url
-      String <- paste("Publication:",pub_link )
+      if(is.null(result$externalIds$DOI[1])){
+        pub_link <- 'NA'
+      } else{
+        doi_url <- paste0("https://doi.org/",result$externalIds$DOI[1])
+        pub_link <- GET(doi_url)$url
+      }
       # Get the Abstract
-      abstract <- sub("^[\\s:~*]+", "", result$abstract[1])
+      abstract <- ifelse(is.null(result$abstract[1]),'NA',sub("^[\\s:~*]+", "", result$abstract[1]))
       message0 <- paste("<span style='color: black;'>Article found at </span><a href='", pub_link, "' target='_blank'>", pub_link, "</a>", sep = "")
       message1 <- "<span style='color: grey; font-size:12px;'>If this is not the desired article, please modify it after previewing the data.</span>"
       return(list(paste(message0,"<br>",message1),TRUE,pub_link,abstract))
@@ -172,8 +174,7 @@ generate_tags <- function(Text){
   words <- words[sapply(words, function(word) count_uppercase(word) >= 3)]
   words <- sapply(words, function(word) {paste0(toupper(substr(word, 1, 1)), substr(word, 2, nchar(word)))})
   words <- unique(words)
-  Tags <- paste(sample(words,8), collapse = "; ")
-  print(Tags)
+  Tags <- ifelse(length(words)>8,paste(sample(words,8), collapse = "; "),paste(words, collapse = "; "))
   return(Tags)
 }
 
@@ -213,13 +214,13 @@ create_meta_data <- function(DOI,Pub_link,Title,Abstract,Data_Link,Spec,hasPheno
   # Tags
   result2000 <- try({
     # Chat GPT
-    Tags <- add_tags(Abstract)
+    Tags <- add_tags(paste(Title,Abstract))
   }, silent = TRUE)
   if(inherits(result2000, "try-error") || length(Tags) == 0) {
     # Basic Text Mining - not perfect but something
-    Tags <- generate_tags(Abstract)
+    Tags <- generate_tags(paste(Title,Abstract))
   }
-
+  
   folder_name <- generate_folder_name(Title,Species[2],Meta_Data)
   inputs <- c("Unique Name","Data DOI","Article Publication link","Title of the Article","Abtract/Description","Species Scientific Name","Species Common Name",
                "Data Sharing Link","Authorization for Accessing Data","Phenotypic Data","Genetic Map","Pedigree Information","Number of samples",
